@@ -1,0 +1,12 @@
+images:
+  cantaloupe:
+    repository: mitlibraries/cantaloupe
+    tag: latest
+
+s3:
+  endpoint: <>
+  accessKey: <>
+  secretKey: <>
+  bucketName: article-hosting
+  cacheKey: cache
+  imageLocationPrefix: articles/

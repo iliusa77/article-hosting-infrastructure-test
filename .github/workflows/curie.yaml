@@ -1,0 +1,60 @@
+name: Deploy article-hosting AWS Infrastructure
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  TERRAFORM_VERSION: 0.13.6
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+  TF_VAR_docdb_user: ${{ secrets.DOCDB_USERNAME }}
+  TF_VAR_docdb_pass: ${{ secrets.DOCDB_PASSWORD }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Terraform
+        run: |
+          archive="terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+          cd tf/envs/curie
+          wget -nv "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${archive}"
+          unzip -o "${archive}"
+          rm "${archive}" 
+          ./terraform --version
+
+      # - name: Terraform init
+      #   run: |
+      #     cd tf/envs/curie
+      #     rm -rf .terraform
+      #     ./terraform init --backend-config="key=curie/terraform.tfstate" -input=false
+
+      # - name: Terraform plan VPC
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform plan --var-file prod.us-east-1.tfvars -out /tmp/curie.plan -target module.vpc
+
+      # - name: Terraform apply VPC
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform apply /tmp/curie.plan 
+
+      # - name: Terraform plan 
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform plan --var-file prod.us-east-1.tfvars -out /tmp/curie.plan 
+
+      # - name: Terraform apply 
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform apply /tmp/curie.plan 
+
+      # - name: Terraform destroy 
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform destroy --var-file prod.us-east-1.tfvars --force

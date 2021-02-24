@@ -1,0 +1,7 @@
+apiVersion: v2
+name: cantaloupe
+description: Cantaloupe Service
+type: application
+home: https://github.com/hivereview/article-hosting
+version: 0.1.1
+appVersion: latest

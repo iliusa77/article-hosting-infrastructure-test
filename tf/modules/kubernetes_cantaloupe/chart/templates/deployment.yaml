@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}--cantaloupe
+  labels:
+    {{- include "articleHosting.labels" . | nindent 4 }}
+    app.kubernetes.io/component: cantaloupe
+spec:
+  selector:
+    matchLabels:
+        {{- include "articleHosting.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: cantaloupe
+  template:
+    metadata:
+      labels:
+          {{- include "articleHosting.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: cantaloupe
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.images.cantaloupe.repository }}:{{ .Values.images.cantaloupe.tag }}"
+          env:
+            - name: HTTP_HTTP2_ENABLED
+              value: "true"
+            - name: HTTPS_HTTP2_ENABLED
+              value: "true"
+            - name: ENDPOINT_IIIF_CONTENT_DISPOSITION
+              value: "none"
+            - name: SOURCE_STATIC
+              value: "S3Source"
+            - name: S3SOURCE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: cantaloupe-s3
+                  key: s3_endpoint
+            - name: S3CACHE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: cantaloupe-s3
+                  key: s3_endpoint
+            - name: S3SOURCE_BASICLOOKUPSTRATEGY_BUCKET_NAME
+              value: "{{ .Values.s3.bucketName }}"
+            - name: S3SOURCE_BASICLOOKUPSTRATEGY_PATH_PREFIX
+              value: "{{ .Values.s3.imageLocationPrefix }}"
+            - name: S3SOURCE_BASICLOOKUPSTRATEGY_PATH_SUFFIX
+              value: ""
+            - name: S3CACHE_BUCKET_NAME
+              value: "{{ .Values.s3.bucketName }}"
+            - name: S3CACHE_OBJECT_KEY_PREFIX
+              value: "{{ .Values.s3.cacheKey }}"
+            - name: S3SOURCE_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: cantaloupe-s3
+                  key: access_key
+            - name: S3SOURCE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cantaloupe-s3
+                  key: secret_key
+            - name: S3CACHE_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: cantaloupe-s3
+                  key: access_key
+            - name: S3CACHE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cantaloupe-s3
+                  key: secret_key
+            - name: CACHE_SERVER_DERIVATIVE_ENABLED
+              value: "true"
+            - name: CACHE_SERVER_DERIVATIVE
+              value: "S3Cache"
+            - name: CACHE_SERVIER_DERIVATIVE_TTL_SECONDS
+              value: "0"
+            - name: CACHE_SERVER_PURGE_MISSING
+              value: "true"
+            - name: CACHE_SERVER_WORKER_ENABLED
+              value: "true"
+            - name: LOG_APPLICATION_LEVEL
+              value: "warn"
+            - name: LOG_ACCESS_CONSOLEAPPENDER_ENABLED
+              value: "true"
+            - name: PROCESSOR_FALLBACK
+              value: "Java2dProcessor"
+            - name: OVERLAYS_STRATEGY
+              value: "BasicStrategy"
+          #resources:
+          ports:
+            - name: http
+              containerPort: 8182
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /iiif/2
+              port: http
