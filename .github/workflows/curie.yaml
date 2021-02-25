@@ -31,6 +31,7 @@ jobs:
       - name: Terraform init
         run: |
           cd tf/envs/curie
+          rm -rf /usr/local/bin/terraform
           rm -rf .terraform
           sudo terraform init --backend-config="key=curie/terraform.tfstate" -input=false
 
