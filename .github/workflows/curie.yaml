@@ -19,20 +19,26 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # - name: Install Terraform
+      #   run: |
+      #     archive="terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+      #     cd tf/envs/curie
+      #     wget -nv "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${archive}"
+      #     unzip -o "${archive}"
+      #     rm "${archive}" 
+      #     ./terraform --version
+
       - name: Install Terraform
         run: |
-          archive="terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
-          cd tf/envs/curie
-          wget -nv "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${archive}"
-          unzip -o "${archive}"
-          rm "${archive}" 
-          ./terraform --version
+          curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | sudo bash
+          sudo rm -rf /usr/local/bit/terraform
+          sudo tfswitch 0.13.6
 
-      # - name: Terraform init
-      #   run: |
-      #     cd tf/envs/curie
-      #     rm -rf .terraform
-      #     ./terraform init --backend-config="key=curie/terraform.tfstate" -input=false
+      - name: Terraform init
+        run: |
+          cd tf/envs/curie
+          rm -rf .terraform
+          sudo terraform init --backend-config="key=curie/terraform.tfstate" -input=false
 
       # - name: Terraform plan VPC
       #   run: |
