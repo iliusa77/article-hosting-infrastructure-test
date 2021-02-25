@@ -31,7 +31,7 @@ jobs:
       - name: Install Terraform
         run: |
           curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | sudo bash
-          sudo rm -rf /usr/local/bit/terraform
+          sudo rm -rf /usr/local/bin/terraform
           sudo tfswitch 0.13.6
 
       - name: Terraform init
