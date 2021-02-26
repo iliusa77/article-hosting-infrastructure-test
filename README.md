@@ -8,6 +8,13 @@ Infrastructure as code for Article Hosting
 ## Manual deploy
 
 ### Prerequisites
+In Github secrets add the variables:
+```
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+TF_VAR_docdb_user
+TF_VAR_docdb_pass
+```
 
 In AWS console:
 1. create S3 bucket "article-hosting-infra-terraform-test" in us-east-1

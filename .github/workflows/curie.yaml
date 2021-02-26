@@ -35,27 +35,27 @@ jobs:
           rm -rf .terraform
           ./terraform init --backend-config="key=curie/terraform.tfstate" -input=false
 
-      - name: Terraform plan VPC
-        run: |
-          cd tf/envs/curie
-          ./terraform plan --var-file prod.us-east-1.tfvars -out /tmp/curie.plan -target module.vpc
-
-      - name: Terraform apply VPC
-        run: |
-          cd tf/envs/curie
-          ./terraform apply /tmp/curie.plan 
-
-      - name: Terraform plan 
-        run: |
-          cd tf/envs/curie
-          ./terraform plan --var-file prod.us-east-1.tfvars -out /tmp/curie.plan 
-
-      - name: Terraform apply 
-        run: |
-          cd tf/envs/curie
-          ./terraform apply /tmp/curie.plan 
-
-      # - name: Terraform destroy 
+      # - name: Terraform plan VPC
       #   run: |
       #     cd tf/envs/curie
-      #     ./terraform destroy --var-file prod.us-east-1.tfvars --force
+      #     ./terraform plan --var-file prod.us-east-1.tfvars -out /tmp/curie.plan -target module.vpc
+
+      # - name: Terraform apply VPC
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform apply /tmp/curie.plan 
+
+      # - name: Terraform plan 
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform plan --var-file prod.us-east-1.tfvars -out /tmp/curie.plan 
+
+      # - name: Terraform apply 
+      #   run: |
+      #     cd tf/envs/curie
+      #     ./terraform apply /tmp/curie.plan 
+
+      - name: Terraform destroy 
+        run: |
+          cd tf/envs/curie
+          ./terraform destroy --var-file prod.us-east-1.tfvars --force
